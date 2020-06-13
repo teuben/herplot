@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 #
-#  plot a spectrum from a SPIRE dataset
+#  plot a map or spectrum from a PACS/SPIRE dataset
+#  i.e. toying around with the hierarchy of Hershel level2 data
 
 import os
 import sys
@@ -42,14 +43,31 @@ print('Found ',len(hdu1),' HDU')
 if utype.find('SpectrometerDetectorSpectrum') > 0 or utype.find('SpectrometerPointSourceSpectrum') > 0:
     print('PJT',utype)
     ispec = int(sys.argv[3])
+    if ispec < 0:
+        print("Header")
+        # for each HDU now read the CHNLNAME, RA, DEC,
+        for ispec in range(len(hdu1)):
+            h1 = hdu1[ispec].header
+            d1 = hdu1[ispec].data
+            if 'CHNLNAME' in h1:
+                nchan = len(d1['wave'])
+                w0 = d1['wave'][0]
+                w1 = d1['wave'][nchan-1]
+                print(ispec,h1['CHNLNAME'],h1['RA'],h1['DEC'],w0,w1,nchan)
+            else:
+                print(ispec,'-')
+                
+            
+        sys.exit(0)
     h1 = hdu1[ispec].header
     d1 = hdu1[ispec].data
-    # assume SPIRE
-    # SpectrometerDetectorSpectrum
-    # SpectrometerPointSourceSpectrum
+    # assume SPIRE SpectrometerDetectorSpectrum or SpectrometerPointSourceSpectrum
     wave = d1['wave']
     flux = d1['flux']
     ferr = d1['error']
+    print(wave.shape)
+    print('wave:',wave.min(),wave.max())
+    print('flux:',flux.min(),flux.max())
 elif utype.find('SlicedPacsCube') > 0:
     # search for the 'bridges' HDU and tell me how many rows it hasn
     h7 = hdu1[7].header
@@ -97,12 +115,22 @@ else:
 
 
 
-
-
-
+Qscatter = True
+Qplot    = True
+#
 plt.figure()
-plt.scatter(wave,flux)
-plt.xlabel('wave (GHz)')
-plt.ylabel('flux W m-2 Hz-1 sr-1')
-plt.title(fn1[0])
+
+if Qscatter:
+    plt.scatter(wave,flux)
+    plt.xlabel('wave (GHz)')
+    plt.ylabel('flux W m-2 Hz-1 sr-1')
+    plt.ylim([flux.min(),flux.max()])
+    plt.title(fn1[0])
+if Qplot:    
+    plt.plot(wave,flux)
+    plt.xlabel('wave (GHz)')
+    plt.ylabel('flux W m-2 Hz-1 sr-1')
+    plt.ylim([flux.min(),flux.max()])
+    plt.title(fn1[0])
+    
 plt.show()
