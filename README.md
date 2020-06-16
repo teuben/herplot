@@ -2,15 +2,38 @@
 
 Some simple plotting in Hershel level2 data using python3
 
+## Software
+
+To explore the data we will discuss here it will be useful to have (not all components have been identified):
+
+   * python3, ideally with jupyter notebook. E.g via anaconda3 (matplotlib etc. of course are a given)
+   * maybe pyspeckit (TBD)
+   * ds9, and optionally the xpa tools (also via SAMP)
+   * fv (from the ftools package)
+   * maybe APLPY if we're going to make fancy plots
+   * TopCat (using SAMP)
+   * Aladin (using SAMP)
+
 ## Hershel (2009-2013)
 
 There were 3 instruments on Hershel
 
 * HIFI (S: single pixel  157 to 625 um or 480-1910 GHz)  - 7 bands [R=1e6-1e7])
-* PACS (I: 70, 100, 160   P: 194-672 um    + S:  55-210 um (R=1000-5000))
-* SPIRE (P: 250, 350, 500 um + FTS:  194-318 um and 294-671 um [R=20-1000])
+* PACS (I: 70, 100, 160   P: 194-672 um    + S:  55-105 ('blue') and 105-210 ('red') um (R=1000-5000))
+* SPIRE (P: 250, 350, 500 um + FTS:  194-318 ('SSW') um  and 294-671 ('SLW') um [R=20-1000])
 
 For the purpose of the range of things were are doing here, we only look at SPIRE and PACS
+
+![pacs and spire](pacs+spire.png)
+
+### Observing Modes
+
+* SpirePhotoLargeScan
+* SpirePacsParellel
+* PacsLineSpec
+* PacsPhoto
+* SpireSpectroPoint
+
 
 ### SPIRE photometry
 
@@ -35,6 +58,8 @@ The long  294-671 um (446-1017 GHz) is labeled "SL".  E.g  SLWC4
 
 * https://www.cosmos.esa.int/web/herschel
 * https://www.cosmos.esa.int/web/herschel/data-products-overview
+  * PACS: http://herschel.esac.esa.int/hcss-doc-15.0/load/pdd/html/PACSproducts.html
+  * SPIRE: http://herschel.esac.esa.int/hcss-doc-15.0/load/pdd/html/SPIREproducts.html
 * HSA: http://archives.esac.esa.int/hsa/whsa/
 * https://www.cosmos.esa.int/web/herschel/user-contributed-software
 * anything in pySpeckit ?
