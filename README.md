@@ -62,4 +62,4 @@ The long  294-671 um (446-1017 GHz) is labeled "SL".  E.g  SLWC4
   * SPIRE: http://herschel.esac.esa.int/hcss-doc-15.0/load/pdd/html/SPIREproducts.html
 * HSA: http://archives.esac.esa.int/hsa/whsa/
 * https://www.cosmos.esa.int/web/herschel/user-contributed-software
-* anything in pySpeckit ?
+* pyspeckit:  https://pyspeckit.readthedocs.io/en/latest/index.html
