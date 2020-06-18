@@ -34,8 +34,19 @@ For the purpose of the range of things were are doing here, we only look at SPIR
 * PacsPhoto
 * SpireSpectroPoint
 
+### Downloading data from HSA
 
-### SPIRE photometry
+Downloading is preferred in HSA.  When you untar, dont keep the top level , it might be something like
+  AIOURL284368565/    or   anonymous284368565/
+  
+Inside of this is the obsid (a 10-digit number like 1342199746) directory.
+Inside of that is the level2 (and perhaps others) directory. We will only need the level2.  If you use the
+URL in the CSV file, you will get the whole shebang. Going manually is better, and click the download button,
+pick the level2 only, and it will download one of those anonymous tar files.
+
+### Example processing
+
+A notebook for [NGC 4321](ngc4321.ipynb) is used to show examples what can be done with these files.
 
 
 ### SPIRE spectra
