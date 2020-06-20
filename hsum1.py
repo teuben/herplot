@@ -148,14 +148,20 @@ elif len(s) > 0 and len(p) == 0:
 elif len(p) > 0:
     print('PACS:',list(p.keys()))
     print('PACS:',p)
-    r = p['HPS3DEQDR']
-    b = p['HPS3DEQIB']
-    print('RED:')
-    for i in r:
-        (hdu,h,d) = get_image(i)
-    print('BLUE:')        
-    for i in b:
-        (hdu,h,d) = get_image(i)
+    if 'HPS3DEQDR' in p:
+        r = p['HPS3DEQDR']
+        print('RED:')
+        for i in r:
+            (hdu,h,d) = get_image(i)
+    else:
+        print('No RED')
+    if 'HPS3DEQIB' in p:
+        b = p['HPS3DEQIB']
+        print('BLUE:')        
+        for i in b:
+            (hdu,h,d) = get_image(i)
+    else:
+        print('No BLUE')
     print('# PACS')        
 else:
     print("Should never happen")
