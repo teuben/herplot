@@ -11,117 +11,6 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 from astropy.io import fits
-import aplpy
-
-def get_radec_spire(ffile):
-    """
-    Return a list of (ra,dec) of the pointing in this bintable from the SPIRE data\
-    Such files have 17 or 18 columns:
-    wave, flux, error, longitude, latitude
-    """
-    print("get_radec_spire:",ffile)
-    hdu = fits.open(ffile)
-    print(len(hdu),'luns')
-    hdr = hdu[1].header
-    dat = hdu[1].data
-    if hdr['EXTNAME'] != 'spectrum2d':
-        print("Bad EXTNAME = ",hdr['EXTNAME'])
-        return None
-    ra = dat['longitude']
-    dec = dat['latitude']
-    waves = hdu[1].data['wave']
-    print("wave:",waves.min(),waves.max())
-    #fluxs = hdu[1].data['flux']
-    return (ra,dec)
-
-def get_radec_pacs(ffile):
-    """
-    Return a list of (ra,dec) of the pointing in this bintable from the PACS data\
-    Such files have 11 columns:
-    wave, flux, error, longitude, latitude
-    """
-    print("get_radec_pacs:",ffile)
-    hdu = fits.open(ffile)
-    print(len(hdu),'luns')
-    hdr = hdu[1].header
-    dat = hdu[1].data
-    if hdr['EXTNAME'] != 'Spectra':
-        print("Bad EXTNAME = ",hdr['EXTNAME'])
-        return None
-    ra = dat['RightAscension']
-    dec = dat['Declination']
-    print("Spectra",len(ra))
-    waves = hdu[1].data['Wavelength']
-    print("Wavelength:",waves.min(),waves.max())
-    #fluxs = hdu[1].data['Flux']
-    return (ra,dec)
-
-def get_image(ffile):
-    """
-    return the HDU, Header,Data of an image
-    """
-    print('get_image:',ffile)
-    hdu = fits.open(ffile)
-    print(len(hdu),'luns')
-    imh = hdu[1].header
-    imd = hdu[1].data
-    if imh['EXTNAME'] != 'image':
-        print("Bad EXTNAME = ",hdr['EXTNAME'])
-        return None
-    print(imd.shape)
-    if len(imd.shape)>2:
-        if 'CRVAL3' in imh:
-            ch0 = (            1-imh['CRPIX3'])*imh['CDELT3']+imh['CRVAL3']
-            chN = (imh['NAXIS3']-imh['CRPIX3'])*imh['CDELT3']+imh['CRVAL3']
-            print('Spectral axis:',ch0,chN,imh['CUNIT3'])
-        else:
-            print("Spectral axis:",imh['CTYPE3'])
-    return (hdu[1],imh,imd)
-
-def get_spire(dirname):
-    """
-    return a dictionary of the fits.gz files from a SPIRE (or PACS) hierarchy one level deep, e.g.
-    
-    d = get_spire('1342247572/level2')
-    gives
-    d['HR_SSW_CUBE'] = '1342247572/level2/HR_SSW_cube/hspirespectrometer1342247572_spg_SSW_HR_20ssc_1461672208855.fits.gz'
-    """
-    fns = glob.glob(dirname + '/*/*.fits.gz')
-    d = {}
-    for fn in fns:
-        fn2 = fn.split('/')
-        if fn2[-2] in d:
-            print("Multiple entries for",fn2[-2])
-        d[fn2[-2]] = fn
-    return d
-
-def get_pacs(dirname):
-    """
-    return a dictionary of the set of fits.gz files from a PACS hierarchy two levels deep, e.g.
-    
-    unlike get_spire(), this one allows multiple fits files per entry
-    """
-    fns = glob.glob(dirname + '/*/*/*.fits.gz')
-    d = {}
-    for fn in fns:
-        fn2 = fn.split('/')
-        if fn2[-3] in d:
-            d[fn2[-3]].append(fn)
-        else:
-            d[fn2[-3]] = [fn]
-    return d
-
-
-def get_spectrum(ffile,xpos,ypos):
-    """
-    SPIRE 
-    """
-    (hdu,h,d) = get_image(ffile)
-    sp = d[:,ypos,xpos]
-    ch = np.arange(len(sp))
-    print("Spectrum min/max",sp.min(),sp.max())
-    return (ch,sp)
-
 
 
 ffile = sys.argv[1]
@@ -145,17 +34,20 @@ if extname == 'spectrum2d':
     print("wave:",wave.min(),wave.max())
     print("flux:",flux.min(),flux.max()) 
 elif extname == 'Spectra':
-    # PacsSpecTable:  table of ra,dec,wave,flux; usually two
+    # PacsSpecTable:  table of Spectra ra,dec,wave,flux; usually two
     # 1342223728/level2/HPSTBRB/herschel.pacs.signal.PacsSpecTable/hpacs1342223728_20hpstbrbs_01_1469458816745.fits.gz 
     ra = d['RightAscension']
     dec = d['Declination']
     print("Spectra",len(ra))
     wave = d['Wavelength']
     flux = d['Flux']
+    n = len(ra)
     print("ra:",ra.min(),ra.max())
     print("dec:",dec.min(),dec.max())
     print("wave:",wave.min(),wave.max())
-    print("flux:",flux.min(),flux.max()) 
+    print("flux:",flux.min(),flux.max())
+    for i in range(n):
+        print(wave[i],flux[i],ra[i],dec[i])
 elif extname == 'flux':
     # PascCube, should be a 5 x 5 x Nsample;  there could be 12 of these
     # 1342223728/level2/HPS3DB/herschel.pacs.signal.PacsCube/hpacs1342223728_20hps3dbs_01_1469459163112.fits.gz 
@@ -163,11 +55,16 @@ elif extname == 'flux':
     wave = hdu[2].data
     ra   = hdu[3].data
     dec  = hdu[4].data
-    print(ra.shape)
+    n = ra.shape[0]
+    print(ra.shape,n)
     print("ra:",ra.min(),ra.max())
     print("dec:",dec.min(),dec.max())
     print("wave:",wave.min(),wave.max())
-    print("flux:",flux.min(),flux.max()) 
+    print("flux:",flux.min(),flux.max())
+    for i in range(n):
+        for j in range(5):
+            for k in range(5):
+                print(wave[i,j,k],flux[i,j,k],ra[i,j,k],dec[i,j,k])
 else:
     print("Unknown extension ",h['EXTNAME'])
 
