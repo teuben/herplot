@@ -28,11 +28,15 @@ if extname == 'spectrum2d':
     dec = d['latitude']
     wave = d['wave']
     flux = d['flux']
-    print("Pointings:",len(ra))
-    print("ra:",ra.min(),ra.max())
-    print("dec:",dec.min(),dec.max())
-    print("wave:",wave.min(),wave.max())
-    print("flux:",flux.min(),flux.max()) 
+    n = len(ra)
+    print("# Pointings:",n)
+    print("# ra:",ra.min(),ra.max())
+    print("# dec:",dec.min(),dec.max())
+    print("# wave:",wave.min(),wave.max())
+    print("# flux:",flux.min(),flux.max())
+    for i in range(n):
+        print(ra[i],dec[i])
+    
 elif extname == 'Spectra':
     # PacsSpecTable:  table of Spectra ra,dec,wave,flux; usually two
     # 1342223728/level2/HPSTBRB/herschel.pacs.signal.PacsSpecTable/hpacs1342223728_20hpstbrbs_01_1469458816745.fits.gz 
@@ -42,10 +46,10 @@ elif extname == 'Spectra':
     wave = d['Wavelength']
     flux = d['Flux']
     n = len(ra)
-    print("ra:",ra.min(),ra.max())
-    print("dec:",dec.min(),dec.max())
-    print("wave:",wave.min(),wave.max())
-    print("flux:",flux.min(),flux.max())
+    print("# ra:",ra.min(),ra.max())
+    print("# dec:",dec.min(),dec.max())
+    print("# wave:",wave.min(),wave.max())
+    print("# flux:",flux.min(),flux.max())
     for i in range(n):
         print(wave[i],flux[i],ra[i],dec[i])
 elif extname == 'flux':
@@ -57,10 +61,10 @@ elif extname == 'flux':
     dec  = hdu[4].data
     n = ra.shape[0]
     print(ra.shape,n)
-    print("ra:",ra.min(),ra.max())
-    print("dec:",dec.min(),dec.max())
-    print("wave:",wave.min(),wave.max())
-    print("flux:",flux.min(),flux.max())
+    print("# ra:",ra.min(),ra.max())
+    print("# dec:",dec.min(),dec.max())
+    print("# wave:",wave.min(),wave.max())
+    print("# flux:",flux.min(),flux.max())
     for i in range(n):
         for j in range(5):
             for k in range(5):
