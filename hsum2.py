@@ -17,7 +17,8 @@ ffile = sys.argv[1]
 
 
 hdu = fits.open(ffile)
-print(len(hdu),'luns')
+print('# ',ffile)
+print('# ',len(hdu),'luns')
 h = hdu[1].header
 d = hdu[1].data
 extname = h['EXTNAME']
